@@ -42,17 +42,19 @@ io.on("connection", (socket) => {
   console.log("Player connected:", socket.id);
 
   socket.on("join", (username) => {
-    players[socket.id] = { username, score: 0 };
+  players[socket.id] = { username, score: 0 };
 
-    // Send leaderboard + current dot
-    io.emit("players", players);
+  // Send updated players to everyone
+  io.emit("players", players);
 
-    // If no dot yet, generate one
-    if (!currentDot) {
-      currentDot = generateDot();
-      io.emit("dot", currentDot);
-    }
-  });
+  // If no dot yet, create one
+  if (!currentDot) {
+    currentDot = generateDot();
+  }
+
+  // Always send the current dot to the new player
+  socket.emit("dot", currentDot);
+});
 
   socket.on("clickedDot", () => {
     if (!players[socket.id]) return;
