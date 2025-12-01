@@ -3,7 +3,11 @@ import { io } from "socket.io-client";
 import PlayerList from "./PlayerList";
 import Dot from "./Dot";
 
-const socket = io("http://localhost:3000"); //Port of the backend Express server
+const socket = io(
+  import.meta.env.PROD
+    ? window.location.origin   // use Render backend in production
+    : "http://localhost:3000"  // use local backend in dev
+);
 
 export default function App() {
   const [username, setUsername] = useState("");
